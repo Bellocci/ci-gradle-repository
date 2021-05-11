@@ -24,8 +24,9 @@ jobs:
          restore-keys: ${{ runner.os }}-m2-
     - name: Build with Gradle
       run: >
-        gradle clean test jar
+        gradle -PbuildProfile=jacoco test jar
       working-directory: ci-gradle
+      if: ${{ always() }}
     - name: Archive JUnit Report
       uses: actions/upload-artifact@v2
       with:

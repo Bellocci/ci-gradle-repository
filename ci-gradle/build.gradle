@@ -1,6 +1,7 @@
 plugins {
 	id 'java-library'
 	id 'application'
+	id 'jacoco'
 }
 
 group = "com.examples"
@@ -18,6 +19,15 @@ targetCompatibility = 1.11
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
+
+/*
+ * Configuration Jacoco
+ */
+
+jacoco {
+    toolVersion = "0.8.5"
+    reportsDirectory = file("$buildDir/reports/tests/jacoco")
+}
 
 repositories {
 	mavenCentral()
@@ -39,15 +49,11 @@ dependencies {
 }
 
 /*
- * Define task
+ * Scelta profilo da applicare
  */
 
-test {
-	useJUnit()
-	
-	// show standard out and standard error of the test JVM(s) on the console
-	testLogging.showStandardStreams = true
-	
-	// Fail the 'test' task on the first test failure
-  	failFast = true
-} 
+if (!hasProperty('buildProfile')) ext.buildProfile = 'default'  
+apply from: "profile-${buildProfile}.gradle"
+
+
+
