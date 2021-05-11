@@ -1,0 +1,55 @@
+plugins {
+	id 'java-library'
+	id 'application'
+}
+
+group = "com.examples"
+version = "0.0.1-SNAPSHOT"
+
+/*
+ * Set JDK 11
+ */
+sourceCompatibility = 1.11
+targetCompatibility = 1.11
+
+/*
+ * Set source encoding: UTF-8
+ */
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+repositories {
+	mavenCentral()
+    jcenter()
+}
+
+dependencies {
+
+	// Use JUnit test framework.
+    testImplementation 'junit:junit:4.13.1'
+    
+    // AssertJ framework
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
+
+	// This dependency is exported to consumers, that is to say found on their compile classpath.
+    api 'org.apache.commons:commons-math3:3.6.1'
+
+    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
+    implementation 'com.google.guava:guava:28.2-jre'
+}
+
+/*
+ * Define task
+ */
+
+test {
+	useJUnit()
+	
+	// show standard out and standard error of the test JVM(s) on the console
+	testLogging.showStandardStreams = true
+	
+	// Fail the 'test' task on the first test failure
+  	failFast = true
+	
+} 
