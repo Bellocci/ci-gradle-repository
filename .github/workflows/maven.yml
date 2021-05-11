@@ -24,6 +24,13 @@ jobs:
          restore-keys: ${{ runner.os }}-m2-
     - name: Build with Gradle
       run: >
-        gradle clean test 
+        gradle clean test jar
       working-directory: ci-gradle
-      
+    - name: Archive JUnit Report
+      uses: actions/upload-artifact@v2
+      with:
+         name: surefire-report-jdk-11
+         path: '**/reports/tests'
+         
+         
+         
