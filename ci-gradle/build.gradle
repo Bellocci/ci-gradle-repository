@@ -41,9 +41,7 @@ jacocoTestReport {
     }
 }
 
-coveralls {
-	environment	'COVERALLS_REPO_TOKEN', '8rIN1MG8RsrpyJZajVyFuJzM4sOWSR1Rp'
-	
+coveralls {	
     jacocoReportPath 'build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml'
 }
 
