@@ -42,7 +42,7 @@ jacocoTestCoverageVerification {
       limit {
         counter = 'INSTRUCTIONS' 
         value = 'MISSEDRATIO'
-        minimum = 0.3
+        minimum = 0.2
       } 
     }
     rule {
@@ -79,17 +79,4 @@ dependencies {
  */
 if (!hasProperty('buildProfile')) ext.buildProfile = 'default'  
 apply from: "profile-${buildProfile}.gradle"
-
-/*
- * Define general task
- */
-test {
-	useJUnit()
-	
-	// show standard out and standard error of the test JVM(s) on the console
-	testLogging.showStandardStreams = true
-	
-	// Fail the 'test' task on the first test failure
-  	failFast = true
-}
 
