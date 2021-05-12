@@ -30,19 +30,29 @@ jacoco {
     reportsDirectory = file("$buildDir/reports/jacoco")
 }
 
-/*
- * COnfiguration COVERALLS
- */
-
-jacocoTestReport {
-    reports {
-        xml.enabled = true // coveralls plugin depends on xml format report
-        html.enabled = true
+jacocoTestCoverageVerification {
+  violationRules {
+    rule {
+      element = 'CLASS'      
+      limit {
+        minimum = 1
+      }   
     }
-}
-
-coveralls {	
-    jacocoReportPath 'build/reports/jacoco/test/jacocoTestReport.xml'
+    rule { 
+      limit {
+        counter = 'INSTRUCTIONS' 
+        value = 'MISSEDRATIO'
+        minimum = 0.2
+      } 
+    }
+    rule {
+    	limit {
+    		counter = 'LINE'
+    		value = 'COVEREDRATIO'
+    		minimum = 0.8
+    	}
+    }
+  }
 }
 
 repositories {
@@ -67,9 +77,6 @@ dependencies {
 /*
  * Scelta profilo da applicare
  */
-
 if (!hasProperty('buildProfile')) ext.buildProfile = 'default'  
 apply from: "profile-${buildProfile}.gradle"
-
-
 
