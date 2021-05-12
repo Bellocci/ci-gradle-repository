@@ -2,6 +2,7 @@ plugins {
 	id 'java-library'
 	id 'application'
 	id 'jacoco'
+	id 'com.github.kt3k.coveralls' version '2.12.0'
 }
 
 group = "com.examples"
@@ -26,7 +27,22 @@ compileTestJava.options.encoding = "UTF-8"
 
 jacoco {
     toolVersion = "0.8.5"
-    reportsDirectory = file("$buildDir/reports/tests/jacoco")
+    reportsDirectory = file("$buildDir/reports/jacoco")
+}
+
+/*
+ * COnfiguration COVERALLS
+ */
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
+}
+
+coveralls {	
+    jacocoReportPath 'build/reports/jacoco/test/jacocoTestReport.xml'
 }
 
 repositories {
