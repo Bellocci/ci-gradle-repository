@@ -30,6 +30,31 @@ jacoco {
     reportsDirectory = file("$buildDir/reports/jacoco")
 }
 
+jacocoTestCoverageVerification {
+  violationRules {
+    rule {
+      element = 'CLASS'      
+      limit {
+        minimum = 1
+      }   
+    }
+    rule { 
+      limit {
+        counter = 'INSTRUCTIONS' 
+        value = 'MISSEDRATIO'
+        minimum = 0.3
+      } 
+    }
+    rule {
+    	limit {
+    		counter = 'LINE'
+    		value = 'COVEREDRATIO'
+    		minimum = 0.8
+    	}
+    }
+  }
+}
+
 repositories {
 	mavenCentral()
 }
@@ -52,9 +77,19 @@ dependencies {
 /*
  * Scelta profilo da applicare
  */
-
 if (!hasProperty('buildProfile')) ext.buildProfile = 'default'  
 apply from: "profile-${buildProfile}.gradle"
 
-
+/*
+ * Define general task
+ */
+test {
+	useJUnit()
+	
+	// show standard out and standard error of the test JVM(s) on the console
+	testLogging.showStandardStreams = true
+	
+	// Fail the 'test' task on the first test failure
+  	failFast = true
+}
 

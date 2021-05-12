@@ -2,7 +2,10 @@
  * COVERALLS profile
  */
 
+jacocoTestReport {
+	dependsOn test
+}
+
 coveralls {
-	apply from: "profile-jacoco.gradle"
 	jacocoReportPath 'build/reports/jacoco/test/jacocoTestReport.xml'
 }
