@@ -20,11 +20,11 @@ jobs:
       uses: actions/cache@v2
       with:
          path: ~/.m2
-         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+         key: ${{ runner.os }}-m2-${{ hashFiles('**/build.gradle') }}
          restore-keys: ${{ runner.os }}-m2-
     - name: Build with Gradle
       run: >
-        gradle -PbuildProfile=coveralls -DpullRequest=${{ github.event.pull_request.number }} jacocoTestReport coveralls jar
+        gradle -PbuildProfile=jacoco -DpullRequest=${{ github.event.pull_request.number }} jacocoTestReport coveralls jar
       working-directory: ci-gradle
       env:
          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
