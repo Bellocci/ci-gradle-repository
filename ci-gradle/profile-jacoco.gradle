@@ -1,21 +1,51 @@
 /*
  * JACOCO profile
  */
+apply plugin: 'jacoco'
+
+// Jacoco configuration
+
+jacoco {
+    toolVersion = "0.8.5"
+    reportsDirectory = file("$buildDir/reports/jacoco")
+}
+
+jacocoTestCoverageVerification {
+  violationRules {
+    rule {
+      element = 'CLASS'      
+      limit {
+        minimum = 1
+      }   
+    }
+    rule { 
+      limit {
+        counter = 'INSTRUCTIONS' 
+        value = 'MISSEDRATIO'
+        minimum = 0.2
+      } 
+    }
+    rule {
+    	limit {
+    		counter = 'LINE'
+    		value = 'COVEREDRATIO'
+    		minimum = 0.8
+    	}
+    }
+  }
+}
+
+// Task
+
 test {
-	useJUnit()
-	
-	// show standard out and standard error of the test JVM(s) on the console
-	testLogging.showStandardStreams = true
-	
-	// Fail the 'test' task on the first test failure
-  	failFast = true
+	apply from: 'profile-default.gradle'
   	
   	finalizedBy jacocoTestReport
 }
 
 jacocoTestReport {
     dependsOn test
-    
+
     reports {
     	xml.enabled = true // coveralls plugin depends on xml format report
         html.enabled = true

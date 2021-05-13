@@ -1,8 +1,19 @@
+
+// In questo modo importo solo la dipendenza per coveralls senza applicare il plugin
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "gradle.plugin.org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.12.0"
+  }
+}
+
 plugins {
 	id 'java-library'
 	id 'application'
-	id 'jacoco'
-	id 'com.github.kt3k.coveralls' version '2.12.0'
 }
 
 group = "com.examples"
@@ -20,40 +31,6 @@ targetCompatibility = 1.11
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
-
-/*
- * Configuration Jacoco
- */
-
-jacoco {
-    toolVersion = "0.8.5"
-    reportsDirectory = file("$buildDir/reports/jacoco")
-}
-
-jacocoTestCoverageVerification {
-  violationRules {
-    rule {
-      element = 'CLASS'      
-      limit {
-        minimum = 1
-      }   
-    }
-    rule { 
-      limit {
-        counter = 'INSTRUCTIONS' 
-        value = 'MISSEDRATIO'
-        minimum = 0.2
-      } 
-    }
-    rule {
-    	limit {
-    		counter = 'LINE'
-    		value = 'COVEREDRATIO'
-    		minimum = 0.8
-    	}
-    }
-  }
-}
 
 repositories {
 	mavenCentral()

@@ -1,14 +1,12 @@
 /*
  * COVERALLS profile
  */
- 
+
+apply plugin: "com.github.kt3k.coveralls"
+apply plugin: 'jacoco'
+
 jacocoTestReport {
-	dependsOn test
-	
-	reports {
-    	xml.enabled = true // coveralls plugin depends on xml format report
-        html.enabled = true
-    }
+	apply from: 'profile-jacoco.gradle'
 }
 
 coveralls {
