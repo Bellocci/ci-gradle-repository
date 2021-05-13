@@ -1,0 +1,14 @@
+apply plugin: 'info.solidsoft.pitest'
+
+pitest {
+	// Quali classi devono essere mutate
+	targetClasses = ['com.examples.myproject.*']
+	outputFormats = ['XML', 'HTML']
+	// Lista di operazioni di mutazioni separati da virgola
+	mutators = [
+		'DEFAULTS',
+		'NON_VOID_METHOD_CALLS'
+		]
+	// Punteggio sotto il quale il test fallisce
+	mutationThreshold = 90
+}

@@ -24,7 +24,7 @@ jobs:
          restore-keys: ${{ runner.os }}-m2-
     - name: Build with Gradle
       run: >
-        gradle -PbuildProfile=coveralls -DpullRequest=${{ github.event.pull_request.number }} jacocoTestReport coveralls jar
+        gradle -PbuildProfile=coveralls -DpullRequest=${{ github.event.pull_request.number }} jacocoTestReport pitest coveralls jar
       working-directory: ci-gradle
       env:
          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}

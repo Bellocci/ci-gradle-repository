@@ -4,9 +4,14 @@
 
 apply plugin: "com.github.kt3k.coveralls"
 apply plugin: 'jacoco'
+apply plugin: 'info.solidsoft.pitest'
 
 jacocoTestReport {
 	apply from: 'profile-jacoco.gradle'
+}
+
+pitest {
+	apply from: 'profile-pitest.gradle'
 }
 
 coveralls {
