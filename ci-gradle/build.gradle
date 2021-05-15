@@ -1,16 +1,30 @@
 
 // In questo modo importo solo la dipendenza per coveralls e pitest senza applicare il plugin
+/*
+ * Differenze tra i plugin per docker: 
+ *	- palantir: More tasks with more functionality available. Less configuration required. 
+ 				Il Dockerfile deve essere fornito e non viene generato automaticamente.
+ 	
+ 	- Bmuschko: Less tasks available, but you can implement one of the provided custom task types.
+				Configuration is more opinionated. Genera automaticamente il dockerfile o 
+				consente di configurare le sue istruzioni nel build.gradle
+ */
+
 buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-      mavenCentral()
-    }
-  }
-  dependencies {
-    classpath "gradle.plugin.org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.12.0"
-    classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.5.1'
-  }
+	repositories {
+		mavenCentral()
+		maven {
+      		url "https://plugins.gradle.org/m2/"
+    	}
+  	}
+  	dependencies {
+  		// plugin coveralls
+    	classpath "gradle.plugin.org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.12.0"
+    	// plugin pitest
+    	classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.5.1'
+    	// plugin docker
+    	classpath "com.bmuschko:gradle-docker-plugin:7.0.0"
+  	}
 }
 
 plugins {
@@ -33,6 +47,14 @@ targetCompatibility = 1.11
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
+
+/*
+ * Define main class. In questo modo eseguendo il task run è possibile
+ * eseguire l'applicazione
+ */
+application {
+	mainClass = 'com.examples.myproject.main.Main'
+}
 
 repositories {
 	mavenCentral()
@@ -58,4 +80,67 @@ dependencies {
  */
 if (!hasProperty('buildProfile')) ext.buildProfile = 'default'  
 apply from: "profile-${buildProfile}.gradle"
+
+/*
+ * PLUGIN DOCKER
+ */
+
+apply plugin: "com.bmuschko.docker-remote-api"
+
+// Import task types
+import com.bmuschko.gradle.docker.tasks.image.*
+import com.bmuschko.gradle.docker.tasks.container.*
+
+task buildImage(type: DockerBuildImage) {
+	dependsOn build
+	dependsOn jar
+	
+	inputDir = file('.')
+	images.add('gradle-hello-world')	
+}
+
+task createAppContainer(type: DockerCreateContainer) {
+	dependsOn buildImage
+	
+	targetImageId buildImage.getImageId()
+	containerName = 'gradle-hello-world-container'
+	// Se settato true, il container viene rimosso quando termina la sua esecuzione
+	hostConfig.autoRemove = true
+}
+
+task mongoDBContainer(type: DockerCreateContainer) {
+	targetImageId 'mongo:4.4.3'
+	containerName = 'mongo-container'
+	// Se settato true, il container viene rimosso quando termina la sua esecuzione
+	hostConfig.autoRemove = true
+}
+
+task startMongoContainer(type: DockerStartContainer) {
+	dependsOn mongoDBContainer
+	targetContainerId mongoDBContainer.getContainerId()
+}
+
+task startAppContainer(type: DockerStartContainer) {
+	dependsOn createAppContainer
+	targetContainerId createAppContainer.getContainerId()
+}
+
+task logContainer(type: DockerLogsContainer) {
+	dependsOn startAppContainer
+	
+	targetContainerId createAppContainer.getContainerId()
+	follow = true
+	stdErr = true
+	stdOut = true
+}
+
+task stopAppContainer(type: DockerStopContainer) {
+	targetContainerId mongoDBContainer.getContainerId()
+}
+
+task myTask(type: Test) {
+	dependsOn logContainer
+	dependsOn startMongoContainer
+    finalizedBy stopAppContainer
+}
 
